@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For My Love ❤️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #cce7ff, #e6f5ff);
+      overflow-x: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen flex flex-col">
+  <canvas id="hearts"></canvas>
+
+<header class="bg-white/60 backdrop-blur-md shadow-md z-10">
+  <nav class="container mx-auto flex justify-center gap-8 py-4 text-lg font-semibold text-[#89CFF0]">
+    <a href="index.html" class="hover:text-[#5db9e5] transition">Home</a>
+    <a href="story.html" class="hover:text-[#5db9e5] transition">Our Story</a>
+    <a href="mylove.html" class="hover:text-[#5db9e5] transition">My Love for You</a>
+  </nav>
+</header>
+
+  <main class="flex-1 flex items-center justify-center text-center px-4 z-10 relative">
+    <div>
+      <h1 class="text-4xl md:text-6xl font-bold text-[#89CFF0]">For my sweet princess Julia</h1>
+      <p class="mt-4 text-lg text-gray-700 max-w-lg mx-auto">
+        A little website just for you
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("hearts");
+    const ctx = canvas.getContext("2d");
+
+    let hearts = [];
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    class Heart {
+      constructor() {
+        this.x = random(0, width);
+        this.y = height + 10;
+        this.size = random(10, 20);
+        this.speedY = random(1, 3);
+        this.speedX = random(-0.5, 0.5);
+        this.alpha = random(0.5, 1);
+      }
+      draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = "#89CFF0"; // light blue
+        ctx.beginPath();
+        const topCurveHeight = this.size * 0.3;
+        ctx.moveTo(this.x, this.y + topCurveHeight);
+        ctx.bezierCurveTo(
+          this.x - this.size / 2, this.y - topCurveHeight,
+          this.x - this.size, this.y + this.size / 2,
+          this.x, this.y + this.size
+        );
+        ctx.bezierCurveTo(
+          this.x + this.size, this.y + this.size / 2,
+          this.x + this.size / 2, this.y - topCurveHeight,
+          this.x, this.y + topCurveHeight
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if (this.y < -this.size) {
+          this.y = height + this.size;
+          this.x = random(0, width);
+        }
+        this.draw();
+      }
+    }
+
+    function initHearts() {
+      hearts = [];
+      for (let i = 0; i < 40; i++) {
+        hearts.push(new Heart());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      hearts.forEach(h => h.update());
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initHearts();
+    });
+
+    initHearts();
+    animate();
+  </script>
+</body>
+</html>
